@@ -7,7 +7,8 @@ const app = express()
 const PORT = Number(process.env.PORT) || 3001
 
 const corsOptions = {
-  origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
+  // origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
+  origin: 'http://localhost:4200',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // Permitir cookies
@@ -17,7 +18,6 @@ app.use(cors(corsOptions))
 app.use(express.json({ limit: '10mb' }))
 
 app.use((req, res, next) => {
-  //define métodos y tipo de contenidos aceptados como requests
   res.header('Access-Control-Allow-Methods', 'GET,POST, PUT, DELETE, PATCH')
   res.header('Access-Control-Allow-Headers', 'Content-type')
   next()
@@ -25,7 +25,8 @@ app.use((req, res, next) => {
 app.disable('x-powered-by')
 app.use('/api', mainRouter)
 
-app.use('*', (req, res, next) => {
+console.log('mainRouter:', mainRouter)
+app.use((req, res, next) => {
   // res.status(404).json({data: 'Not found'})
   return res.status(404).json('Ruta no encontrada')
 })
