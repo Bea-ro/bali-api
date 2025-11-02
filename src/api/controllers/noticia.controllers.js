@@ -1,0 +1,70 @@
+const Noticia = require('../models/noticia.model')
+
+const getAllNoticias = async (req, res, next) => {
+  try {
+    const noticias = await Noticia.find()
+    return res.status(200).json(noticias)
+  } catch (error) {
+    return next('Noticias no encontradas', error)
+  }
+}
+
+const createNoticia = async (req, res, next) => {
+  try {
+    const newNoticia = new Noticia(req.body)
+    const createdNoticia = await newNoticia.save()
+    return res.status(200).json(createdNoticia)
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Error al guardar la noticiaa', error })
+  }
+}
+
+const getNoticiaBySlug = async (req, res, next) => {
+  try {
+    const noticia = await Noticia.findOne({ slug: req.params.slug })
+
+    if (!noticia) {
+      return res.status(404).json({ message: 'Noticia no encontrada' })
+    }
+    return res.status(200).json(noticia)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+const updateNoticia = async (req, res, next) => {
+  try {
+    const { slug } = req.params
+    const { updateData } = req.body
+
+    const updatedNoticia = await Noticia.findOneAndUpdate(slug, updateData, {
+      new: true
+    })
+
+    return res.status(200).json(updatedNoticia)
+  } catch (error) {
+    console.log(error)
+    return next('Noticia no actualizada', error)
+  }
+}
+
+const deleteNoticia = async (req, res, next) => {
+  try {
+    const deletedNoticia = await Noticia.findOneAndDelete({
+      slug: req.params.slug
+    })
+    return res.status(200).json('Noticia eliminada')
+  } catch (error) {
+    return next('Noticia no encontrada', error)
+  }
+}
+
+module.exports = {
+  getAllNoticias,
+  createNoticia,
+  getNoticiaBySlug,
+  updateNoticia,
+  deleteNoticia
+}
