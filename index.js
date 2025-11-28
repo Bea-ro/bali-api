@@ -6,9 +6,11 @@ const mainRouter = require('./src/api/routes/index.routes')
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
 
+console.log('ORIGIN_URL =', process.env.ORIGIN_URL)
+
 const corsOptions = {
-  // origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
-  origin: 'http://localhost:4200',
+  //origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
+  origin: process.env.ORIGIN_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // Permitir cookies
@@ -24,8 +26,6 @@ app.use((req, res, next) => {
 })
 app.disable('x-powered-by')
 app.use('/api', mainRouter)
-
-console.log('mainRouter:', mainRouter)
 app.use((req, res, next) => {
   // res.status(404).json({data: 'Not found'})
   return res.status(404).json('Ruta no encontrada')
