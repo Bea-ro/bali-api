@@ -9,8 +9,8 @@ const PORT = Number(process.env.PORT) || 3001
 console.log('ORIGIN_URL =', process.env.ORIGIN_URL)
 
 const corsOptions = {
-  //origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
-  origin: process.env.ORIGIN_URL,
+  origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
+  //origin: process.env.ORIGIN_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // Permitir cookies

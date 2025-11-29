@@ -17,7 +17,7 @@ const createNoticia = async (req, res, next) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: 'Error al guardar la noticiaa', error })
+      .json({ message: 'Error al guardar la noticia', error })
   }
 }
 
