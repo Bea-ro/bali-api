@@ -2,7 +2,7 @@ const Category = require('../models/category.model')
 
 const getCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find().populate('noticias')
+    const categories = await Category.find()
     return res.status(200).json(categories)
   } catch (error) {
     return next('No se ha podido acceder a las categorías', error)
@@ -11,9 +11,10 @@ const getCategories = async (req, res, next) => {
 
 const createCategory = async (req, res, next) => {
   try {
+    console.log(req.body)
     const newCategory = new Category(req.body)
     const createdCategory = await newCategory.save()
-    return res.status(200).json(createdCategory)
+    return res.status(200).json({ category: req.body })
   } catch (error) {
     return res
       .status(500)
@@ -23,9 +24,7 @@ const createCategory = async (req, res, next) => {
 
 const getCategoryById = async (req, res, next) => {
   try {
-    const category = await Category.findOne({ id: req.params.id }).populate(
-      'noticias'
-    )
+    const category = await Category.findOne({ id: req.params.id })
 
     if (!category) {
       return res.status(404).json({ message: 'Categoría no encontrada' })
@@ -43,7 +42,7 @@ const updateCategory = async (req, res, next) => {
 
     const updatedCategory = await Category.findOneAndUpdate(id, updateData, {
       new: true
-    }).populate('noticias')
+    })
 
     return res.status(200).json(updatedCategory)
   } catch (error) {

@@ -13,7 +13,7 @@ const createNoticia = async (req, res, next) => {
   try {
     const newNoticia = new Noticia(req.body)
     const createdNoticia = await newNoticia.save()
-    return res.status(200).json(createdNoticia)
+    return res.status(200).send(createdNoticia)
   } catch (error) {
     return res
       .status(500)
@@ -53,7 +53,7 @@ const updateNoticia = async (req, res, next) => {
 const deleteNoticia = async (req, res, next) => {
   try {
     const deletedNoticia = await Noticia.findOneAndDelete({
-      slug: req.params.slug
+      id: req.params.id
     })
     return res.status(200).json('Noticia eliminada')
   } catch (error) {
