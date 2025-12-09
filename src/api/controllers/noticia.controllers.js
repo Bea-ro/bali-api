@@ -34,6 +34,19 @@ const getNoticiaBySlug = async (req, res, next) => {
   }
 }
 
+const getNoticiaById = async (req, res, next) => {
+  try {
+    const noticia = await Noticia.findOne({ id: req.params._id })
+
+    if (!noticia) {
+      return res.status(404).json({ message: 'Noticia no encontrada' })
+    }
+    return res.status(200).json(noticia)
+  } catch (error) {
+    return next(error)
+  }
+}
+
 const updateNoticia = async (req, res, next) => {
   try {
     const { slug } = req.params
@@ -65,6 +78,7 @@ module.exports = {
   getAllNoticias,
   createNoticia,
   getNoticiaBySlug,
+  getNoticiaById,
   updateNoticia,
   deleteNoticia
 }
