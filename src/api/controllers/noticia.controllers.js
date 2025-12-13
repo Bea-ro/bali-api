@@ -36,7 +36,7 @@ const getNoticiaBySlug = async (req, res, next) => {
 
 const getNoticiaById = async (req, res, next) => {
   try {
-    const noticia = await Noticia.findOne({ id: req.params._id })
+    const noticia = await Noticia.findById(req.params.id)
 
     if (!noticia) {
       return res.status(404).json({ message: 'Noticia no encontrada' })
@@ -49,13 +49,13 @@ const getNoticiaById = async (req, res, next) => {
 
 const updateNoticia = async (req, res, next) => {
   try {
-    const { slug } = req.params
-    const { updateData } = req.body
+    const { id } = req.params
+    const updateData = req.body
 
-    const updatedNoticia = await Noticia.findOneAndUpdate(slug, updateData, {
+    const updatedNoticia = await Noticia.findByIdAndUpdate(id, updateData, {
       new: true
     })
-
+    console.log(updatedNoticia)
     return res.status(200).json(updatedNoticia)
   } catch (error) {
     console.log(error)
@@ -65,9 +65,9 @@ const updateNoticia = async (req, res, next) => {
 
 const deleteNoticia = async (req, res, next) => {
   try {
-    const deletedNoticia = await Noticia.findOneAndDelete({
-      id: req.params.id
-    })
+    console.log(req.params.id)
+    const deletedNoticia = await Noticia.findByIdAndDelete(req.params.id)
+    console.log(deletedNoticia)
     return res.status(200).json('Noticia eliminada')
   } catch (error) {
     return next('Noticia no encontrada', error)

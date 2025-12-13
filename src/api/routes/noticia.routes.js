@@ -13,8 +13,8 @@ router.get('/', getAllNoticias)
 router.get('/slug/:slug', getNoticiaBySlug)
 router.get('/id/:id', getNoticiaById)
 router.post('/', createNoticia)
-router.put('/:slug', updateNoticia)
-router.patch('/:slug', updateNoticia)
-router.delete('/:slug', deleteNoticia)
+router.put('/:id', updateNoticia)
+router.patch('/:id', updateNoticia)
+router.delete('/:id', deleteNoticia)
 
 module.exports = router
