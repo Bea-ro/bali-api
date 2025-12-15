@@ -65,9 +65,7 @@ const updateNoticia = async (req, res, next) => {
 
 const deleteNoticia = async (req, res, next) => {
   try {
-    console.log(req.params.id)
     const deletedNoticia = await Noticia.findByIdAndDelete(req.params.id)
-    console.log(deletedNoticia)
     return res.status(200).json('Noticia eliminada')
   } catch (error) {
     return next('Noticia no encontrada', error)
