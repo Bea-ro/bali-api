@@ -2,7 +2,9 @@ const mongoose = require('mongoose')
 
 const ClienteSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true }
+    name: { type: String, required: true, trim: true },
+    emial: { type: String, required: true, trim: true },
+    cif: { type: String, required: true, trim: true }
   },
   {
     timestamps: true,
