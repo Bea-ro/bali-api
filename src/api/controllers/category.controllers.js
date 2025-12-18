@@ -15,7 +15,6 @@ const getCategoriesUsed = async (req, res, next) => {
     const categories = await Noticia.distinct('category', {
       category: { $ne: '' }
     })
-    console.log(categories)
     return res.status(200).json(categories)
   } catch (error) {
     return next('No se ha podido acceder a las categorías utilizadas', error)

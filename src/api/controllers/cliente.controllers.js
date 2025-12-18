@@ -15,7 +15,7 @@ const createCliente = async (req, res, next) => {
   try {
     const newCliente = new Cliente(req.body)
     const createdCliente = await newCliente.save()
-    return res.status(200).send(createdCliente)
+    return res.status(200).json(createdCliente)
   } catch (error) {
     return res
       .status(500)
