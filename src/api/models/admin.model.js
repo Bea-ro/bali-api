@@ -17,7 +17,7 @@ const AdminSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
       validate: {
         validator: function (value) {
@@ -31,7 +31,8 @@ const AdminSchema = new mongoose.Schema(
       type: String,
       enum: ['superadmin', 'editor'],
       required: true
-    }
+    },
+    active: { type: Boolean, default: false }
   },
   {
     timestamps: true,

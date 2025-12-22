@@ -1,6 +1,10 @@
 const bcrypt = require('bcrypt')
 const Admin = require('../models/admin.model')
-const { signToken } = require('../../config/jwt')
+const {
+  signActivationToken,
+  signLoginToken
+} = require('../services/jwt.service')
+const { sendActivationEmail } = require('../services/mail.service')
 
 const getAdmins = async (req, res, next) => {
   try {
@@ -12,13 +16,23 @@ const getAdmins = async (req, res, next) => {
 }
 
 const adminRegister = async (req, res, next) => {
-  console.log(req.body)
   try {
-    const newAdmin = new Admin(req.body)
-    console.log(newAdmin)
-    const registeredAdmin = await newAdmin.save()
-    console.log(registeredAdmin)
-    return res.status(200).json(registeredAdmin)
+    const newAdmin = await Admin.create({
+      email: req.body.email,
+      rol: req.body.rol,
+      isActive: false
+    })
+    const token = signActivationToken(newAdmin)
+    const emailSent = await sendActivationEmail(newAdmin.email, token)
+    if (!emailSent) {
+      return res.status(500).json({
+        message:
+          'No se pudo enviar el email de activación. Inténtalo más tarde.'
+      })
+    }
+    return res.status(200).json({
+      message: 'Se ha enviado un email de activación al nuevo administrador.'
+    })
   } catch (error) {
     console.error('registro ERROR:', error)
     return res
@@ -46,7 +60,7 @@ const adminLogin = async (req, res, next) => {
       })
     }
 
-    const token = signToken(adminDB)
+    const token = signLoginToken(adminDB)
     return res.status(200).json({
       token,
       admin: {
