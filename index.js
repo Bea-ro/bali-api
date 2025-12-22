@@ -6,8 +6,6 @@ const mainRouter = require('./src/api/routes/index.routes')
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
 
-console.log('ORIGIN_URL =', process.env.ORIGIN_URL)
-
 const corsOptions = {
   origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
   //origin: process.env.ORIGIN_URL,
