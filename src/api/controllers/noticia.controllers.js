@@ -50,9 +50,9 @@ const getNoticiaById = async (req, res, next) => {
 const updateNoticia = async (req, res, next) => {
   try {
     const { id } = req.params
-    const updateData = req.body
+    const updatedData = req.body
 
-    const updatedNoticia = await Noticia.findByIdAndUpdate(id, updateData, {
+    const updatedNoticia = await Noticia.findByIdAndUpdate(id, updatedData, {
       new: true
     })
     console.log(updatedNoticia)

@@ -18,14 +18,7 @@ const AdminSchema = new mongoose.Schema(
     password: {
       type: String,
       required: false,
-      trim: true,
-      validate: {
-        validator: function (value) {
-          return /^(?=.*?[a-z])(?=.*?[A-Z]).{6,}$/.test(value)
-        },
-        message:
-          'La contraseña debe tener al menos 6 caracteres y contener mayúsculas y minúsculas.'
-      }
+      trim: true
     },
     rol: {
       type: String,

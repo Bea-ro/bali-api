@@ -20,7 +20,7 @@ const adminRegister = async (req, res, next) => {
     const newAdmin = await Admin.create({
       email: req.body.email,
       rol: req.body.rol,
-      isActive: false
+      active: false
     })
     const token = signActivationToken(newAdmin)
     const emailSent = await sendActivationEmail(newAdmin.email, token)
@@ -30,20 +30,27 @@ const adminRegister = async (req, res, next) => {
           'No se pudo enviar el email de activación. Inténtalo más tarde.'
       })
     }
-    return res.status(200).json({
-      message: 'Se ha enviado un email de activación al nuevo administrador.'
-    })
+    return res.status(200).json(newAdmin)
   } catch (error) {
-    console.error('registro ERROR:', error)
-    return res
-      .status(500)
-      .json({ message: 'Error al registrar al administrador', error })
+    console.error(error)
+    if (error.code === 11000 && error.keyValue?.email) {
+      return res
+        .status(409)
+        .json({ message: 'Ya existe un administrador con este correo.', error })
+    }
+    return res.status(500).json({
+      message:
+        'Se ha producido un error al registrar al administrador. Inténtalo más tarde.',
+      error
+    })
   }
 }
 
 const adminLogin = async (req, res, next) => {
+  console.log(req.body)
   try {
     const adminDB = await Admin.findOne({ email: req.body.email })
+    console.log('localiza', adminDB.password)
     if (!adminDB) {
       return res.status(401).json({
         message: 'Email o contraseña incorrectos.'
@@ -54,9 +61,10 @@ const adminLogin = async (req, res, next) => {
       req.body.password,
       adminDB.password
     )
+    console.log(passwordMatch)
     if (!passwordMatch) {
       return res.status(401).json({
-        message: 'Email o contraseña incorrectos'
+        message: 'Email o contraseña incorrectos.'
       })
     }
 
@@ -72,8 +80,7 @@ const adminLogin = async (req, res, next) => {
   } catch (error) {
     console.error('LOGIN ERROR:', error)
     return res.status(500).json({
-      message: 'Error interno del servidor.',
-      error: error.message
+      message: 'Error interno del servidor. Inténtalo más tarde.'
     })
   }
 }

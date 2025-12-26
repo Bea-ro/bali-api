@@ -7,10 +7,6 @@ const {
   adminLogin,
   adminDeregister
 } = require('../controllers/admin.controllers')
-const {
-  activateAccount,
-  resetPassword
-} = require('../controllers/auth.controllers')
 
 const { isAuth } = require('../../middlewares/auth')
 
@@ -21,8 +17,5 @@ router.post('/registro', adminRegister)
 router.post('/login', adminLogin)
 router.delete('/:id', adminDeregister)
 //router.delete('/:id', [isAuth], adminDeregister)
-
-router.post('/activar-cuenta', activateAccount)
-router.post('/resetear-contraseña', resetPassword)
 
 module.exports = router
