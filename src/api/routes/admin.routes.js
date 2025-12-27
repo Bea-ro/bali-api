@@ -10,12 +10,9 @@ const {
 
 const { isAuth } = require('../../middlewares/auth')
 
-// router.get('/', [isAuth], getAdmins)
-router.get('/', getAdmins)
-// router.post('/registro', [isAuth], adminRegister)
-router.post('/registro', adminRegister)
+router.get('/', [isAuth], getAdmins)
+router.post('/registro', [isAuth], adminRegister)
 router.post('/login', adminLogin)
-router.delete('/:id', adminDeregister)
-//router.delete('/:id', [isAuth], adminDeregister)
+router.delete('/:id', [isAuth], adminDeregister)
 
 module.exports = router

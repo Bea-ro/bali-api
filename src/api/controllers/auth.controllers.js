@@ -1,4 +1,4 @@
-const { verifyToken, hashPassword } = require('../services/jwt.service')
+const { verifyToken } = require('../services/jwt.service')
 const Admin = require('../models/admin.model')
 
 const verifyTokenValidity = async (req, res) => {

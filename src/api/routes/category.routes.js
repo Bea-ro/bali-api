@@ -8,13 +8,14 @@ const {
   deleteCategory
 } = require('../controllers/category.controllers')
 const router = express.Router()
+const { isAuth } = require('../../middlewares/auth')
 
 router.get('/', getCategories)
 router.get('/used', getCategoriesUsed)
 router.get('/:id', getCategoryById)
-router.post('/', createCategory)
-router.put('/:id', updateCategory)
-router.patch('/:id', updateCategory)
-router.delete('/:id', deleteCategory)
+router.post('/', [isAuth], createCategory)
+router.put('/:id', [isAuth], updateCategory)
+router.patch('/:id', [isAuth], updateCategory)
+router.delete('/:id', [isAuth], deleteCategory)
 
 module.exports = router

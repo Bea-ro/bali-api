@@ -47,10 +47,8 @@ const adminRegister = async (req, res, next) => {
 }
 
 const adminLogin = async (req, res, next) => {
-  console.log(req.body)
   try {
     const adminDB = await Admin.findOne({ email: req.body.email })
-    console.log('localiza', adminDB.password)
     if (!adminDB) {
       return res.status(401).json({
         message: 'Email o contraseña incorrectos.'

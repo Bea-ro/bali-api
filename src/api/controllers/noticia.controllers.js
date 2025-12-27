@@ -1,4 +1,6 @@
 const Noticia = require('../models/noticia.model')
+const Parser = require('rss-parser')
+const parser = new Parser()
 
 const getAllNoticias = async (req, res, next) => {
   try {
@@ -72,8 +74,29 @@ const deleteNoticia = async (req, res, next) => {
   }
 }
 
+const getRSS = async (req, res) => {
+  try {
+    const feed = await parser.parseURL(
+      //'https://sede.agenciatributaria.gob.es/Sede/todas-noticias.xml'
+      'https://www.seg-social.es/wps/wcm/connect/wss/poin_contenidos/internet/1139/?srv=cmpnt&source=library&cmpntid=601fa53b-f1d2-4180-a5e7-fe0b130e0296&WCM_Page.ResetAll=TRUE&CACHE=NONE&CONTENTCACHE=NONE&CONNECTORCACHE=NONE'
+    )
+    const cleanUrl = (url) => (typeof url === 'string' ? url.trim() : url)
+
+    res.json(
+      feed.items.map((item) => ({
+        title: item.title,
+        link: cleanUrl(item.link),
+        pubDate: item.pubDate
+      }))
+    )
+  } catch (error) {
+    res.status(500).json({ error: 'Error leyendo el RSS' })
+  }
+}
+
 module.exports = {
   getAllNoticias,
+  getRSS,
   createNoticia,
   getNoticiaBySlug,
   getNoticiaById,

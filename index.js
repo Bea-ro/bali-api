@@ -7,7 +7,12 @@ const app = express()
 const PORT = Number(process.env.PORT) || 3001
 
 const corsOptions = {
-  origin: [process.env.ORIGIN_URL, 'http://localhost:4200'],
+  origin: [
+    process.env.ORIGIN_URL,
+    'http://localhost:4200',
+    'https://sede.agenciatributaria.gob.es/Sede/todas-noticias.xml',
+    'https://www.seg-social.es/wps/wcm/connect/wss/poin_contenidos/internet/1139/?srv=cmpnt&source=library&cmpntid=601fa53b-f1d2-4180-a5e7-fe0b130e0296&WCM_Page.ResetAll=TRUE&CACHE=NONE&CONTENTCACHE=NONE&CONNECTORCACHE=NONE'
+  ],
   //origin: process.env.ORIGIN_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
