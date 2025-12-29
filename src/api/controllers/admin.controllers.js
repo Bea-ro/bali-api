@@ -32,12 +32,12 @@ const adminRegister = async (req, res, next) => {
     }
     return res.status(200).json(newAdmin)
   } catch (error) {
-    console.error(error)
     if (error.code === 11000 && error.keyValue?.email) {
       return res
         .status(409)
         .json({ message: 'Ya existe un administrador con este correo.', error })
     }
+
     return res.status(500).json({
       message:
         'Se ha producido un error al registrar al administrador. Inténtalo más tarde.',
@@ -59,17 +59,23 @@ const adminLogin = async (req, res, next) => {
       req.body.password,
       adminDB.password
     )
-    console.log(passwordMatch)
+
     if (!passwordMatch) {
       return res.status(401).json({
         message: 'Email o contraseña incorrectos.'
       })
     }
 
+    if (!adminDB.active) {
+      return res.status(403).json({
+        message: 'La cuenta está inactiva. Contacta con el administrador.'
+      })
+    }
+
     const token = signLoginToken(adminDB)
     return res.status(200).json({
       token,
-      admin: {
+      user: {
         id: adminDB._id,
         email: adminDB.email,
         rol: adminDB.rol

@@ -1,10 +1,10 @@
 const express = require('express')
 const {
-  getAllClientes,
-  getClienteById,
-  createCliente,
-  updateCliente,
-  deleteCliente,
+  getClientes,
+  clienteLogin,
+  clienteRegister,
+  // updateCliente,
+  clienteDeregister,
   getAllDocuments,
   getDocument
 } = require('../controllers/cliente.controllers')
@@ -14,12 +14,12 @@ const {
 } = require('../controllers/auth.controllers')
 const router = express.Router()
 
-router.get('/', getAllClientes)
-//router.get('/:id', getClienteById)
-router.post('/', createCliente)
-router.put('/:id', updateCliente)
-router.patch('/:id', updateCliente)
-router.delete('/:id', deleteCliente)
+router.get('/', getClientes)
+router.post('/registro', clienteRegister)
+router.post('/login', clienteLogin)
+// router.put('/:id', updateCliente)
+// router.patch('/:id', updateCliente)
+router.delete('/:id', clienteDeregister)
 // router.get('/:cliente', getAllDocuments)
 // router.get('/:cliente/:archivo', getDocument)
 
