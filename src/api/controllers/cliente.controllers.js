@@ -177,20 +177,15 @@ const getAllDocuments = async (req, res, next) => {
 }
 
 const getDocument = async (req, res) => {
-  console.log(req.params.id)
   try {
     const clienteDB = await Cliente.findById(req.params.id)
-    console.log('nombrecliente', clienteDB.name)
     if (!clienteDB)
       return res.status(404).json({ message: 'Cliente no encontrado' })
-    const relativePath = req.params.path
-    console.log('relativepath es', relativePath)
-    const filePath = path.join(BASE_PATH, clienteDB.name, relativePath)
-
+    const relativePath = req.params.splat
+    const filePath = path.join(BASE_PATH, clienteDB.name, ...relativePath)
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: 'Archivo no encontrado' })
     }
-
     res.sendFile(filePath)
   } catch (error) {
     console.error(error)

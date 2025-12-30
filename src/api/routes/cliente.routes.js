@@ -19,7 +19,7 @@ router.post('/login', clienteLogin)
 // router.put('/:id', updateCliente)
 // router.patch('/:id', updateCliente)
 router.delete('/:id', [isAuth], clienteDeregister)
-router.get('/:id/archivo/:path', getDocument)
+router.get('/:id/archivo/*splat', [isAuth], getDocument)
 router.get('/:id', [isAuth], getAllDocuments)
 
 module.exports = router
