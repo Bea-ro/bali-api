@@ -6,7 +6,8 @@ const NoticiaSchema = new mongoose.Schema(
     slug: { type: String, required: true, trim: true },
     category: { type: String, required: true, trim: true },
     text: { type: String, required: true, trim: true },
-    date: { type: String, required: true, trim: true }
+    date: { type: String, required: true, trim: true },
+    type: { type: String, default: 'internal' }
   },
   {
     timestamps: true,

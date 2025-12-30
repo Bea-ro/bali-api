@@ -1,8 +1,10 @@
 const Admin = require('../api/models/admin.model')
+const Cliente = require('../api/models/cliente.model')
 const { verifyToken } = require('../api/services/jwt.service')
 
 const isAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization
+
   if (!authHeader) {
     return res.status(401).json({ message: 'No hay token' })
   }
@@ -12,10 +14,13 @@ const isAuth = async (req, res, next) => {
     return res.status(401).json({ message: 'Token inválido' })
   }
   try {
-    const validToken = verifyToken(token)
-    const adminLogued = await Admin.findById(validToken.id)
-    adminLogued.password = null
-    req.user = adminLogued
+    const payload = verifyToken(token)
+    const userLogged =
+      payload.rol === 'cliente'
+        ? await Cliente.findById(payload.id)
+        : await Admin.findById(payload.id)
+    userLogged.password = null
+    req.user = userLogged
     next()
   } catch (error) {
     return res

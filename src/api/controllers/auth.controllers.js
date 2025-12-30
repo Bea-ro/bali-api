@@ -1,4 +1,4 @@
-const { verifyToken } = require('../services/jwt.service')
+const { verifyToken, signLoginToken } = require('../services/jwt.service')
 const Admin = require('../models/admin.model')
 const Cliente = require('../models/cliente.model')
 
@@ -32,9 +32,11 @@ const activateAccount = async (req, res, next) => {
       throw new Error('Password débil')
     }
     const payload = verifyToken(token)
+
     if (payload.purpose !== 'activation') {
       return res.status(401).json({ error: 'Token inválido' })
     }
+
     const user =
       payload.rol === 'cliente'
         ? await Cliente.findById(payload.id)
@@ -45,9 +47,17 @@ const activateAccount = async (req, res, next) => {
     }
     user.password = password
     user.active = true
-    user.rol = payload.rol
     await user.save()
-    return res.json({ message: 'Cuenta activada', user })
+    const loginToken = signLoginToken(user)
+
+    return res.json({
+      message: 'Cuenta activada',
+      token: loginToken,
+      user: {
+        id: user._id,
+        rol: user.rol
+      }
+    })
   } catch (error) {
     console.log(error)
     return res.status(500).json({

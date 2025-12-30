@@ -74,14 +74,30 @@ const deleteNoticia = async (req, res, next) => {
   }
 }
 
-const getRSS = async (req, res) => {
+const getAeatRss = async (req, res) => {
   try {
     const feed = await parser.parseURL(
-      //'https://sede.agenciatributaria.gob.es/Sede/todas-noticias.xml'
+      'https://sede.agenciatributaria.gob.es/Sede/todas-noticias.xml'
+    )
+    const cleanUrl = (url) => (typeof url === 'string' ? url.trim() : url)
+    res.json(
+      feed.items.map((item) => ({
+        title: item.title,
+        link: cleanUrl(item.link),
+        pubDate: item.pubDate
+      }))
+    )
+  } catch (error) {
+    res.status(500).json({ error: 'Error leyendo el RSS' })
+  }
+}
+
+const getSsRss = async (req, res) => {
+  try {
+    const feed = await parser.parseURL(
       'https://www.seg-social.es/wps/wcm/connect/wss/poin_contenidos/internet/1139/?srv=cmpnt&source=library&cmpntid=601fa53b-f1d2-4180-a5e7-fe0b130e0296&WCM_Page.ResetAll=TRUE&CACHE=NONE&CONTENTCACHE=NONE&CONNECTORCACHE=NONE'
     )
     const cleanUrl = (url) => (typeof url === 'string' ? url.trim() : url)
-
     res.json(
       feed.items.map((item) => ({
         title: item.title,
@@ -96,7 +112,8 @@ const getRSS = async (req, res) => {
 
 module.exports = {
   getAllNoticias,
-  getRSS,
+  getAeatRss,
+  getSsRss,
   createNoticia,
   getNoticiaBySlug,
   getNoticiaById,

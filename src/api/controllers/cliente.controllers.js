@@ -7,6 +7,9 @@ const {
 } = require('../services/jwt.service')
 const { sendActivationEmail } = require('../services/mail.service')
 const bcrypt = require('bcrypt')
+const { getFilesRecursive } = require('../services/fileSystem')
+
+const BASE_PATH = 'C:/Users/b_a_r/Documents/TWS/Clientes'
 
 const getClientes = async (req, res, next) => {
   try {
@@ -18,7 +21,6 @@ const getClientes = async (req, res, next) => {
 }
 
 const clienteRegister = async (req, res, next) => {
-  console.log(req.body)
   try {
     const newCliente = await Cliente.create({
       name: req.body.name,
@@ -26,7 +28,6 @@ const clienteRegister = async (req, res, next) => {
       cif: req.body.cif,
       active: false
     })
-    console.log(newCliente)
     const token = signActivationToken(newCliente)
     const emailSent = await sendActivationEmail(newCliente.email, token)
     if (!emailSent) {
@@ -137,39 +138,63 @@ const clienteDeregister = async (req, res, next) => {
 
 const getAllDocuments = async (req, res, next) => {
   try {
-    const cliente = req.params.cliente
-    const basePath = `C:/Users/b_a_r/Documents/TWS/Clientes/${cliente}`
+    const clienteDB = await Cliente.findById(req.params.id)
+    if (!clienteDB)
+      return res.status(404).json({ message: 'Cliente no encontrado' })
 
-    fs.readdir(basePath, (err, files) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: 'Error al acceder a los archivos' })
+    const clienteDir = path.join(BASE_PATH, clienteDB.name)
 
-      const documentos = files.map((file) => ({
-        name: file,
-        path: `/clientes/${cliente}/${file}`
-      }))
+    if (!fs.existsSync(clienteDir)) {
+      return res.status(404).json({ message: 'Ruta no encontrada' })
+    }
 
-      res.json(documentos)
+    const folders = fs
+      .readdirSync(clienteDir, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+
+    const result = folders.map((folder) => {
+      const folderPath = path.join(clienteDir, folder.name)
+      const files = fs
+        .readdirSync(folderPath, { withFileTypes: true })
+        .filter((e) => e.isFile())
+        .map((file) => ({
+          name: file.name,
+          path: path.posix.join(folder.name, file.name)
+        }))
+
+      return {
+        name: folder.name,
+        files
+      }
     })
+    res.json(result)
   } catch (error) {
-    return next('Error al acceder a los documentos', error)
+    console.error(error)
+    return res
+      .status(500)
+      .json({ message: 'Error al acceder a los documentos.' })
   }
 }
 
-const getDocument = async (req, res, next) => {
+const getDocument = async (req, res) => {
+  console.log(req.params.id)
   try {
-    const cliente = req.params.cliente
-    //ojo aquí ponía name en vez de arhcivo y la ruta del router llevaba /archivo/ delante del /:name
-    const archivo = req.params.archivo
-    const filePath = path.join(
-      `C:/Users/b_a_r/Documents/TWS/Clientes/${cliente}`,
-      archivo
-    )
+    const clienteDB = await Cliente.findById(req.params.id)
+    console.log('nombrecliente', clienteDB.name)
+    if (!clienteDB)
+      return res.status(404).json({ message: 'Cliente no encontrado' })
+    const relativePath = req.params.path
+    console.log('relativepath es', relativePath)
+    const filePath = path.join(BASE_PATH, clienteDB.name, relativePath)
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: 'Archivo no encontrado' })
+    }
+
     res.sendFile(filePath)
   } catch (error) {
-    return next('Error al acceder al documento', error)
+    console.error(error)
+    return res.status(500).json({ message: 'Error al acceder al documento.' })
   }
 }
 

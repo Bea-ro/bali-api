@@ -1,4 +1,6 @@
 const express = require('express')
+const router = express.Router()
+
 const {
   getClientes,
   clienteLogin,
@@ -8,22 +10,16 @@ const {
   getAllDocuments,
   getDocument
 } = require('../controllers/cliente.controllers')
-const {
-  activateAccount,
-  resetPassword
-} = require('../controllers/auth.controllers')
-const router = express.Router()
 
-router.get('/', getClientes)
-router.post('/registro', clienteRegister)
+const { isAuth } = require('../../middlewares/auth')
+
+router.get('/', [isAuth], getClientes)
+router.post('/registro', [isAuth], clienteRegister)
 router.post('/login', clienteLogin)
 // router.put('/:id', updateCliente)
 // router.patch('/:id', updateCliente)
-router.delete('/:id', clienteDeregister)
-// router.get('/:cliente', getAllDocuments)
-// router.get('/:cliente/:archivo', getDocument)
-
-router.post('/activar-cuenta', activateAccount)
-router.post('/resetear-contraseña', resetPassword)
+router.delete('/:id', [isAuth], clienteDeregister)
+router.get('/:id/archivo/:path', getDocument)
+router.get('/:id', [isAuth], getAllDocuments)
 
 module.exports = router
