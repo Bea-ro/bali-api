@@ -21,7 +21,7 @@ const nodemailer = require('nodemailer')
 
 const sendActivationEmail = async (email, token) => {
   const link = `${process.env.ORIGIN_URL}/activar-cuenta?token=${token}`
-  ///const link = `http://localhost:4200/activar-cuenta?token=${token}`
+  //const link = `http://localhost:4200/activar-cuenta?token=${token}`
 
   // const mailOptions = {
   //   from: 'contacto@tuwebsolidaria.com',
@@ -33,7 +33,8 @@ const sendActivationEmail = async (email, token) => {
   //       <p>Por favor, finaliza tu registro en el siguiente enlace antes de 24 horas:</p>
   //     <a href="${link}">Activar cuenta</a>
   //   `
-  //}
+  // }
+
   try {
     //const info = await transporter.sendMail(mailOptions)
     return true
