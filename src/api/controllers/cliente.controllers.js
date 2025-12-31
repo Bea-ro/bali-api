@@ -7,7 +7,6 @@ const {
 } = require('../services/jwt.service')
 const { sendActivationEmail } = require('../services/mail.service')
 const bcrypt = require('bcrypt')
-const { getFilesRecursive } = require('../services/fileSystem')
 
 const BASE_PATH = 'C:/Users/b_a_r/Documents/TWS/Clientes'
 
