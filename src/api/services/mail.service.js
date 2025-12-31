@@ -17,8 +17,7 @@ transporter.verify((err, success) =>
 )
 
 const sendActivationEmail = async (email, token) => {
-  //cambiar localhost por process.env.ORIGIN_URL tanto en link como en el logo de mailOptions
-  const link = `http://localhost:4200/activar-cuenta?token=${token}`
+  const link = `${process.env.ORIGIN_URL}/activar-cuenta?token=${token}`
 
   const mailOptions = {
     from: 'contacto@tuwebsolidaria.com',
