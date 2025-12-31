@@ -13,7 +13,6 @@ const corsOptions = {
     process.env.AEAT_URL,
     process.env.SS_URL
   ],
-  //origin: process.env.ORIGIN_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }
