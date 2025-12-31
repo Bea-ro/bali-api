@@ -4,7 +4,6 @@ const { verifyToken } = require('../api/services/jwt.service')
 
 const isAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization
-  console.log(authHeader)
   if (!authHeader) {
     return res.status(401).json({ message: 'No hay token' })
   }
