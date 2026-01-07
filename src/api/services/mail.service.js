@@ -36,7 +36,7 @@ const sendActivationEmail = async (email, token) => {
   // }
 
   try {
-    //const info = await transporter.sendMail(mailOptions)
+    // const info = await transporter.sendMail(mailOptions)
     return true
   } catch (error) {
     console.error('Error al enviar el correo.', error)
