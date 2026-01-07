@@ -7,7 +7,37 @@ const getAllNoticias = async (req, res, next) => {
     const noticias = await Noticia.find()
     return res.status(200).json(noticias)
   } catch (error) {
-    return next('Noticias no encontradas', error)
+    return res
+      .status(500)
+      .json({ message: 'No se puede acceder a las noticias en este momento.' })
+  }
+}
+
+const getNoticiasPaginated = async (req, res, next) => {
+  try {
+    const filter = req.query.filter || ''
+    const page = parseInt(req.query.page) || 0
+    const pageSize = parseInt(req.query.pageSize) || 2
+
+    const noticias = await Noticia.find({
+      title: { $regex: filter, $options: 'i' }
+    })
+      .sort({ createdAt: -1 })
+      .skip(page * pageSize)
+      .limit(pageSize)
+
+    const total = await Noticia.countDocuments({
+      title: { $regex: filter, $options: 'i' }
+    })
+
+    return res.status(200).json({
+      data: noticias,
+      total
+    })
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'No se puede acceder a las noticias en este momento.' })
   }
 }
 
@@ -17,9 +47,10 @@ const createNoticia = async (req, res, next) => {
     const createdNoticia = await newNoticia.save()
     return res.status(200).send(createdNoticia)
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: 'Error al guardar la noticia', error })
+    return res.status(500).json({
+      message:
+        'Se ha producido un error al publicar la noticia. Inténtalo más tarde.'
+    })
   }
 }
 
@@ -57,11 +88,13 @@ const updateNoticia = async (req, res, next) => {
     const updatedNoticia = await Noticia.findByIdAndUpdate(id, updatedData, {
       new: true
     })
-    console.log(updatedNoticia)
+
     return res.status(200).json(updatedNoticia)
   } catch (error) {
     console.log(error)
-    return next('Noticia no actualizada', error)
+    return res.status(500).json({
+      message: 'No se ha podido actualizar la noticia. Inténtalo más tarde.'
+    })
   }
 }
 
@@ -70,7 +103,9 @@ const deleteNoticia = async (req, res, next) => {
     const deletedNoticia = await Noticia.findByIdAndDelete(req.params.id)
     return res.status(200).json('Noticia eliminada')
   } catch (error) {
-    return next('Noticia no encontrada', error)
+    return res.status(500).json({
+      message: 'No se ha podido eliminar la noticia. Inténtalo más tarde.'
+    })
   }
 }
 
@@ -112,6 +147,7 @@ const getSsRss = async (req, res) => {
 
 module.exports = {
   getAllNoticias,
+  getNoticiasPaginated,
   getAeatRss,
   getSsRss,
   createNoticia,

@@ -1,6 +1,7 @@
 const express = require('express')
 const {
   getAllNoticias,
+  getNoticiasPaginated,
   getAeatRss,
   getSsRss,
   getNoticiaBySlug,
@@ -12,7 +13,8 @@ const {
 const router = express.Router()
 const { isAuth } = require('../../middlewares/auth')
 
-router.get('/', getAllNoticias)
+router.get('/todas', getAllNoticias)
+router.get('/', [isAuth], getNoticiasPaginated)
 router.get('/rss/aeat', getAeatRss)
 router.get('/rss/ss', getSsRss)
 router.get('/slug/:slug', getNoticiaBySlug)

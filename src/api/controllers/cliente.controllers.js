@@ -15,7 +15,36 @@ const getClientes = async (req, res, next) => {
     const clientes = await Cliente.find()
     return res.status(200).json(clientes)
   } catch (error) {
-    return next('No es posible acceder a los clientes', error)
+    return res.status(500).json({
+      message: 'No se ha podido acceder a los clientes.'
+    })
+  }
+}
+
+const getClientesPaginated = async (req, res, next) => {
+  try {
+    const filter = req.query.filter || ''
+    const page = parseInt(req.query.page) || 0
+    const pageSize = parseInt(req.query.pageSize) || 2
+
+    const clientes = await Cliente.find({
+      name: { $regex: filter, $options: 'i' }
+    })
+      .skip(page * pageSize)
+      .limit(pageSize)
+
+    const total = await Cliente.countDocuments({
+      name: { $regex: filter, $options: 'i' }
+    })
+
+    return res.status(200).json({
+      data: clientes,
+      total
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: 'No se ha podido acceder a los clientes.'
+    })
   }
 }
 
@@ -32,7 +61,7 @@ const clienteRegister = async (req, res, next) => {
     if (!emailSent) {
       return res.status(500).json({
         message:
-          'No se pudo enviar el email de activación. Inténtalo más tarde.'
+          'No se ha podido enviar el email de activación. Inténtalo más tarde.'
       })
     }
     return res.status(200).json(newCliente)
@@ -41,23 +70,21 @@ const clienteRegister = async (req, res, next) => {
     if (error.code === 11000 && error.keyValue?.email) {
       return res
         .status(409)
-        .json({ message: 'Ya existe un cliente con este correo.', error })
+        .json({ message: 'Ya existe un cliente con este correo.' })
     }
     if (error.code === 11000 && error.keyValue?.name) {
       return res
         .status(409)
-        .json({ message: 'Ya existe un administrador con este nombre.', error })
+        .json({ message: 'Ya existe un cliente con este nombre.' })
     }
     if (error.code === 11000 && error.keyValue?.cif) {
       return res.status(409).json({
-        message: 'Ya existe un administrador con documento fiscal.',
-        error
+        message: 'Ya existe un cliente con este documento fiscal.'
       })
     }
     return res.status(500).json({
       message:
-        'Se ha producido un error al registrar el cliente. Inténtalo más tarde.',
-      error
+        'Se ha producido un error al registrar el cliente. Inténtalo más tarde.'
     })
   }
 }
@@ -67,7 +94,7 @@ const clienteLogin = async (req, res, next) => {
     const clienteDB = await Cliente.findOne({ email: req.body.email })
     if (!clienteDB) {
       return res
-        .status(404)
+        .status(401)
         .json({ message: 'Email o contraseña incorrectos.' })
     }
 
@@ -93,7 +120,8 @@ const clienteLogin = async (req, res, next) => {
       token,
       user: {
         id: clienteDB._id,
-        email: clienteDB.email
+        email: clienteDB.email,
+        rol: clienteDB.rol
       }
     })
   } catch (error) {
@@ -131,7 +159,10 @@ const clienteDeregister = async (req, res, next) => {
     await Cliente.findByIdAndDelete(req.params.id)
     return res.status(200).json('Se ha dado de baja al cliente.')
   } catch (error) {
-    return next('Cliente no encontrado', error)
+    return res.status(500).json({
+      message:
+        'Se ha producido un error al borrar el cliente. Por favor, inténtalo más tarde.'
+    })
   }
 }
 
@@ -194,6 +225,7 @@ const getDocument = async (req, res) => {
 
 module.exports = {
   getClientes,
+  getClientesPaginated,
   clienteRegister,
   clienteLogin,
   // updateCliente,

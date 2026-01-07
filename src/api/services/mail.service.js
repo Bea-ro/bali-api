@@ -1,23 +1,23 @@
 const nodemailer = require('nodemailer')
 
-// const transporter = nodemailer.createTransport({
-//   host: 'smtp.dondominio.com',
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     user: process.env.NODemailer_USER,
-//     pass: process.env.NODemailer_PASS
-//   },
-//   tls: {
-//     rejectUnauthorized: false
-//   }
-// })
+const transporter = nodemailer.createTransport({
+  host: 'smtp.dondominio.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.NODemailer_USER,
+    pass: process.env.NODemailer_PASS
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+})
 
-// transporter.verify((err, success) =>
-//   err
-//     ? console.error('Error en configuración de SMTP:', err)
-//     : console.log('Servidor listo para enviar correos')
-// )
+transporter.verify((err, success) =>
+  err
+    ? console.error('Error en configuración de SMTP:', err)
+    : console.log('Servidor listo para enviar correos')
+)
 
 const sendActivationEmail = async (email, token) => {
   const link = `${process.env.ORIGIN_URL}/activar-cuenta?token=${token}`

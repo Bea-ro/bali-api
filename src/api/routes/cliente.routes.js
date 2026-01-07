@@ -3,6 +3,7 @@ const router = express.Router()
 
 const {
   getClientes,
+  getClientesPaginated,
   clienteLogin,
   clienteRegister,
   // updateCliente,
@@ -13,7 +14,8 @@ const {
 
 const { isAuth } = require('../../middlewares/auth')
 
-router.get('/', [isAuth], getClientes)
+router.get('/todos', [isAuth], getClientes)
+router.get('/', [isAuth], getClientesPaginated)
 router.post('/registro', [isAuth], clienteRegister)
 router.post('/login', clienteLogin)
 // router.put('/:id', updateCliente)

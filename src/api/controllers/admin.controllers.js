@@ -11,7 +11,9 @@ const getAdmins = async (req, res, next) => {
     const admins = await Admin.find()
     return res.status(200).json(admins)
   } catch (error) {
-    return next('No se ha podido acceder a los administradores', error)
+    return res.status(500).json({
+      message: 'No se ha podido acceder a los administradores.'
+    })
   }
 }
 
@@ -27,7 +29,7 @@ const adminRegister = async (req, res, next) => {
     if (!emailSent) {
       return res.status(500).json({
         message:
-          'No se pudo enviar el email de activación. Inténtalo más tarde.'
+          'No se ha podido enviar el email de activación. Inténtalo más tarde.'
       })
     }
     return res.status(200).json(newAdmin)
@@ -35,13 +37,12 @@ const adminRegister = async (req, res, next) => {
     if (error.code === 11000 && error.keyValue?.email) {
       return res
         .status(409)
-        .json({ message: 'Ya existe un administrador con este correo.', error })
+        .json({ message: 'Ya existe un administrador con este correo.' })
     }
 
     return res.status(500).json({
       message:
-        'Se ha producido un error al registrar al administrador. Inténtalo más tarde.',
-      error
+        'Se ha producido un error al registrar al administrador. Inténtalo más tarde.'
     })
   }
 }
@@ -100,7 +101,10 @@ const adminDeregister = async (req, res, next) => {
     await Admin.findByIdAndDelete(req.params.id)
     return res.status(200).json('Se ha dado de baja al administrador.')
   } catch (error) {
-    return next('Administrador no encontrado', error)
+    return res.status(500).json({
+      message:
+        'Se ha producido un error al eliminar el administrador. Por favor, inténtalo más tarde.'
+    })
   }
 }
 
