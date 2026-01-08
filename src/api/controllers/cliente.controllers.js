@@ -132,21 +132,35 @@ const clienteLogin = async (req, res, next) => {
   }
 }
 
-// const updateCliente = async (req, res, next) => {
-//   try {
-//     const { id } = req.params
-//     const updateData = req.body
+const getClienteById = async (req, res, next) => {
+  try {
+    const cliente = await Cliente.findById(req.params.id)
 
-//     const updatedCliente = await Cliente.findByIdAndUpdate(id, updateData, {
-//       new: true
-//     })
+    if (!cliente) {
+      return res.status(404).json({ message: 'Cliente no encontrado' })
+    }
+    return res.status(200).json(cliente)
+  } catch (error) {
+    return next(error)
+  }
+}
 
-//     return res.status(200).json(updatedCliente)
-//   } catch (error) {
-//     console.log(error)
-//     return next('Error al actualizar el cliente', error)
-//   }
-// }
+const updateCliente = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const updateData = req.body
+
+    const updatedCliente = await Cliente.findByIdAndUpdate(id, updateData, {
+      new: true
+    })
+
+    return res.status(200).json(updatedCliente)
+  } catch (error) {
+    return res.status(500).json({
+      message: 'No se ha podido actualizar la noticia. Inténtalo más tarde.'
+    })
+  }
+}
 
 const clienteDeregister = async (req, res, next) => {
   try {
@@ -228,7 +242,8 @@ module.exports = {
   getClientesPaginated,
   clienteRegister,
   clienteLogin,
-  // updateCliente,
+  getClienteById,
+  updateCliente,
   clienteDeregister,
   getAllDocuments,
   getDocument
