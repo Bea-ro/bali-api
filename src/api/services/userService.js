@@ -1,7 +1,7 @@
 const Cliente = require('../models/cliente.model')
 const Admin = require('../models/admin.model')
 const { signActivationToken } = require('./jwt.service')
-const { sendActivationEmail } = require('./mail.service')
+const { sendActivationEmail, sendResetEmail } = require('./mail.service')
 
 const UserService = {
   async findByEmail(email) {
@@ -16,6 +16,10 @@ const UserService = {
   async generateActivation(user) {
     const token = signActivationToken(user)
     await sendActivationEmail(user.email, token)
+  },
+  async generateReset(user) {
+    const token = signActivationToken(user)
+    await sendResetEmail(user.email, token)
   }
 }
 
