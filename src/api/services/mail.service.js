@@ -28,7 +28,7 @@ const sendActivationEmail = async (email, token) => {
   //   to: email,
   //   subject: 'Activa tu cuenta',
   //   html: `
-  //  <img style="height:50px" class="header-logo" src="https://sitio-bali.vercel.app/bali-asociados-logo-correo.jpg" alt="bali-asociados-logo"/>
+  //  <img style="height:50px" class="header-logo" src="https://sitio-bali.vercel.app/bali-asociados-logo-pdf.png" alt="bali-asociados-logo"/>
   //   <p>Un administrador del sitio web de Bali Asociados ha iniciado tu registro.</p>
   //       <p>Por favor, finaliza tu registro en el siguiente enlace antes de 24 horas:</p>
   //     <a href="${link}">Activar cuenta</a>
@@ -36,7 +36,7 @@ const sendActivationEmail = async (email, token) => {
   // }
 
   try {
-    //const info = await transporter.sendMail(mailOptions)
+    //    const info = await transporter.sendMail(mailOptions)
     return true
   } catch (error) {
     console.error('Error al enviar el correo.', error)
