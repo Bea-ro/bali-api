@@ -34,6 +34,7 @@ const adminRegister = async (req, res, next) => {
     }
     return res.status(200).json(newAdmin)
   } catch (error) {
+    console.error('Excepción', error)
     if (error.code === 11000 && error.keyValue?.email) {
       return res
         .status(409)
