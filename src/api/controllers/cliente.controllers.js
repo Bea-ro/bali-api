@@ -23,19 +23,28 @@ const getClientes = async (req, res, next) => {
 
 const getClientesPaginated = async (req, res, next) => {
   try {
-    const filter = req.query.filter || ''
+    const { search = '', active = '' } = req.query
     const page = parseInt(req.query.page) || 0
     const pageSize = parseInt(req.query.pageSize) || 2
 
-    const clientes = await Cliente.find({
-      name: { $regex: filter, $options: 'i' }
-    })
+    const query = {}
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { cif: { $regex: search, $options: 'i' } }
+      ]
+    }
+
+    if (active !== '') {
+      query.active = active === 'true'
+    }
+
+    const clientes = await Cliente.find(query)
       .skip(page * pageSize)
       .limit(pageSize)
 
-    const total = await Cliente.countDocuments({
-      name: { $regex: filter, $options: 'i' }
-    })
+    const total = await Cliente.countDocuments(query)
 
     return res.status(200).json({
       data: clientes,
