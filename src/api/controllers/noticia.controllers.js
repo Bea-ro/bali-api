@@ -4,7 +4,7 @@ const parser = new Parser()
 
 const getAllNoticias = async (req, res, next) => {
   try {
-    const noticias = await Noticia.find()
+    const noticias = await Noticia.find().sort({ createdAt: -1 }).limit(15)
     return res.status(200).json(noticias)
   } catch (error) {
     return res
@@ -116,7 +116,7 @@ const getAeatRss = async (req, res) => {
     )
     const cleanUrl = (url) => (typeof url === 'string' ? url.trim() : url)
     res.json(
-      feed.items.map((item) => ({
+      feed.items.slice(0, 15).map((item) => ({
         title: item.title,
         link: cleanUrl(item.link),
         pubDate: item.pubDate
@@ -134,7 +134,7 @@ const getSsRss = async (req, res) => {
     )
     const cleanUrl = (url) => (typeof url === 'string' ? url.trim() : url)
     res.json(
-      feed.items.map((item) => ({
+      feed.items.slice(0, 15).map((item) => ({
         title: item.title,
         link: cleanUrl(item.link),
         pubDate: item.pubDate
